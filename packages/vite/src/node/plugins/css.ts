@@ -352,7 +352,9 @@ export function cssPostPlugin(config: ResolvedConfig): Plugin {
         css = css.replace(assetUrlRE, (_, fileHash, postfix = '') => {
           const filename = getAssetFilename(fileHash, config) + postfix
           registerAssetToChunk(chunk, filename)
-          if (!isRelativeBase || inlined) {
+          const cssChunkDir = path.dirname(chunk.fileName)
+          const fileDir = path.dirname(filename)
+          if (!isRelativeBase || inlined || cssChunkDir !== fileDir) {
             // absolute base or relative base but inlined (injected as style tag into
             // index.html) use the base as-is
             return config.base + filename
